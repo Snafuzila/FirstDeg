@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+void main()
+{
+	/* 1 and 2
+	int tripleNum, reverse, hundreds, tens, digits;
+	printf("Enter a 3 digit number\n");
+	scanf_s("%d", &tripleNum);
+	hundreds = tripleNum / 100;
+	tens = (tripleNum/10)%10;
+	digits = (tripleNum%10);
+	printf("the sum of your number digits is %d\n", (hundreds+tens+digits));
+	reverse = digits * 100 + tens * 10 + hundreds;
+	printf("the reversed number is %d\n", reverse);
+
+	
+
+	int days, years, month;
+	printf("Enter number of days\n");
+	scanf_s("%d", &days);
+	*/
+
+	int timesloop15 = 1000 / 15;
+	int result15 = 0;
+	int result3 = 0;
+	int result5 = 0;
+	printf("sum of all numbers devided by 3 AND 5 from 1-1000 is: ");
+	for (size_t i = 0; i < timesloop15+1; i++)
+	{
+		result15 += i*15;
+	}
+	printf("%d\n", result15);
+
+
+	int timesloop5 = 1000 / 5;
+	int timesloop3 = 1000 / 3;
+	printf("sum of all numbers devided by 3 OR 5 from 1-1000: ");
+	for (size_t i = 0; i < timesloop3 + 1; i++)
+	{
+		result3 += i * 3;
+		
+	}
+	for (size_t i = 0; i < timesloop5 + 1; i++)
+	{
+		result5 += i * 5;
+	}
+	printf("%d \n", result3+result5-result15);
+}
