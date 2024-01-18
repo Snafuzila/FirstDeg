@@ -1,0 +1,98 @@
+#include <stdio.h>
+void fizzBuzz();//Q1
+void q2(); //Q2
+void q3(); //Q3
+void q4(); //Q4
+
+void main()
+{
+	q4();
+}
+
+
+void q4()
+{
+	int times = 0, sum = 0, temp = 0;
+	printf("How many numbers do you want to input? ");
+	scanf_s("%d", &times);
+	for (int i = 0; i < times; i++)
+	{
+		scanf_s("%d", temp);
+		printf(", ");
+		if ((temp % 2) == 1 && (temp % 3) != 0)
+		{
+			sum += temp;
+		}
+	}
+	printf("%d", sum);
+
+}
+
+
+void q3()
+{
+	int userCash = 0, twenty = 0, ten = 0, five = 0, two = 0, one = 0;
+	printf("How much money do you have? ");
+	scanf_s("%d", &userCash);
+	if (userCash >= 20)
+	{
+		twenty = userCash / 20;
+		userCash %= 20;
+	}
+	if (userCash >= 10)
+	{
+		ten = 1;
+		userCash -=10;
+	}
+	if (userCash >= 5)
+	{
+		five = 1;
+		userCash -=5;
+	}
+	if (userCash >= 2)
+	{
+		two = userCash / 2;
+		userCash %= 2;
+	}
+	one = userCash;
+	printf("we can make it into \n %d, 20NIS\n %d, 10NIS\n %d, 5NIS\n %d, 2NIS\n %d, 1NIS\n", twenty, ten, five, two, one);
+}
+void q2()
+{
+	int userNum;
+	printf("Please enter a number\n");
+	scanf_s("%d", &userNum);
+	userNum /= 25;
+	printf("The number is in [%d, %d] range\n", userNum * 25, userNum * 25 + 25);
+
+}
+void fizzBuzz()
+{
+	printf("Let's play 'FizzBuzz'. Please enter a positive integer\n");
+	int userNum;
+	scanf_s("%d", &userNum);
+	if (userNum >= 1)
+	{
+		printf("1"); //just so output run clear with 'space' and ','
+		for (int i = 2; i < userNum + 1; i++) //we already output 1
+		{
+			if (i % 15 == 0)
+			{
+				printf(" ,FizzBuzz");
+				continue;
+			}
+			if (i % 3 == 0)
+			{
+				printf(" ,Fizz");
+				continue;
+			}
+			if (i % 5 == 0)
+			{
+				printf(" ,Buzz");
+				continue;
+			}
+			printf(" ,%d", i);
+		}
+	}
+	else printf("Your number isn't a positive integer");
+}
