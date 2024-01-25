@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+int calc(int num1, int num2, char op);
+int lowerThan(int num);
+
+void main()
+{
+	/*
+	int num1, num2;
+	char op;
+	 %d %c", &num1, &num2, &op);
+	printf("%d\n", calc(num1, num2, op));
+	*/
+	int num = 10;
+	printf("%d", lowerThan(num));
+}
+int calc(int num1, int num2, char op)
+{
+	switch (op)
+	{
+	case '+':
+		return num1 + num2;
+	case '-':
+		return num1 - num2;
+	case '*':
+		return num1 * num2;
+	case '/':
+		if (num2 == 0)
+		{
+			printf("cant devide by 0\n");
+			return 0;
+		}
+		return num1 / num2;
+	case '%':
+		if (num2 == 0)
+		{
+			printf("cant module 0\n");
+			return 0;
+		}
+		return num1 % num2;
+	default:
+		printf("invalid operator\n");
+		return 0;
+	}
+}
+
+int lowerThan(int num)
+{
+	int temp;
+	scanf_s("%d", &temp);
+	if (temp == -1)
+		return 0;
+	if (temp < num)
+		return (lowerThan(num) + 1);
+	else return (lowerThan(num));
+}
