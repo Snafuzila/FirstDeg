@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <math.h>
+
+int Q1(int number); //gets an int and return the sum of the digits. (OddNum-double) 613-> 3-1+6
+int Q2(int number); //does the same but in different method
+
+
+void main()
+{
+	int userNum;
+	printf("please enter a large integer: ");
+	scanf_s("%d", &userNum);
+	printf("using method 1 your output is: %d\n", Q1(userNum));
+	printf("using method 2 your output is: %d\n", Q2(userNum));
+}
+
+int Q2(int number) 
+{
+	if (fabs(number)<10)
+	{
+		return number;
+	}
+	return (number%10 + Q2(-number/10));
+}
+
+
+int Q1(int number)
+{
+	int temp = number % 100;
+	if (number < 100)
+	{
+		return (temp % 10 - temp / 10);
+	}
+	return (temp % 10 - temp / 10)+Q1(number/100);
+}
