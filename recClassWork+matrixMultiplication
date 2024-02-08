@@ -1,0 +1,98 @@
+#include <stdio.h>
+
+int binToTen(int baseTwo);
+int tenToBin(int baseTen);
+void setMatrix(int matrixA[10][10], int n);
+void printMatrix(int matrixA[10][10], int n);
+int** multiplyMatrix(int matrixA[10][10], int matrixB[10][10], int n);
+
+void main()
+{
+    
+	int n;
+	int matrixA[10][10] = { 0 };
+    int result[10][10] = { 0 };
+    printf("Enter the size of the matrix: ");
+	scanf_s("%d", &n);
+    setMatrix(matrixA, n);
+    printMatrix(matrixA, n);
+    /*
+    int n;
+    scanf_s("%d", &n);
+    int matrixA[10][10] = { 0 };
+    int result[10][10] = { 0 };
+    setMatrix(matrixA, n);
+    */
+    **result = multiplyMatrix(matrixA, matrixA, n);
+    printMatrix(result, n);
+
+    
+    /*
+    int baseTwoNum = 0;
+    printf("Enter base2 number: ");
+    scanf_s("%d", &baseTwoNum);
+    printf("%d", binToTen(baseTwoNum));
+
+    int baseTenNum = 0;
+    printf("Enter base10 number: ");
+    scanf_s("%d", &baseTenNum);
+    printf("%d", tenToBin(baseTenNum));
+    */
+}
+
+void printMatrix(int matrixA[10][10], int n)
+{
+    int row, column = 0;
+    for (row = 0; row < n; row++) 
+    {
+        printf("| ");
+        for (column = 0; column < n; column++)
+        {
+            printf(" %d ", matrixA[row][column]);
+        }
+        printf(" |\n");
+    }
+}
+
+void setMatrix(int matrixA[10][10], int n)
+{
+    int row, column;
+    for (row = 0; row < n; row++)
+    {
+        for (column = 0; column < n; column++)
+        {
+            printf("value for %dx%d: ", row, column);
+            scanf_s("%d", &matrixA[row][column]);
+        }
+    }
+}
+
+int** multiplyMatrix(int matrixA[10][10], int matrixB[10][10], int n)
+{
+    int matrixC[10][10] = { 0 };
+    int rowC, columnC=0;
+    int i = 0;
+    for (rowC = 0; rowC < n; rowC++)
+    {
+        for (columnC= 0; columnC < n; columnC++)
+        {
+            i = 0;
+            for (i = 0; i < n; i++)
+            {
+                matrixC[rowC][columnC] += matrixA[rowC][n] * matrixB[n][columnC];
+            }
+        }
+    }
+    return &matrixC;
+}
+
+int binToTen(int baseTwo)
+{
+    if (baseTwo <2) return baseTwo;
+    return 2*binToTen(baseTwo / 10)+(baseTwo%10);
+}
+int tenToBin(int baseTen)
+{
+    if (!baseTen) return baseTen;
+    return 10 * tenToBin(baseTen / 2) + (baseTen % 2);
+}
