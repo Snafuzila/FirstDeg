@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+void arrCalc(int* arr, int n, int* min, int* sum, double* avrg);
+int sameNeighbors(int* arr, int n);
+int ascendI(int* arr, int* n, int* veryAscend);
+int ascendRec(int* arr, int n, int* veryAscend);
+
+void main()
+{
+	int arr[] = { 1, 2, 8, 5, 9, 6};
+	/*
+	int min, sum;
+	double avrg;
+	arrCalc(arr, sizeof(arr) / sizeof(arr[0]), &min, &sum, &avrg);
+	printf("min %d , sum %d , avg %.2lf", min, sum, avrg);
+	*/
+	//printf("%d", sameNeighbors(arr, sizeof(arr) / sizeof(arr[0])));
+
+}
+void arrCalc(int* arr, int n, int* min, int* sum, double* avrg)
+{
+	*min = *arr;
+	*sum = 0;
+	*avrg = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		if (*(arr + i) < *min)
+		{
+			min = *(arr + i);
+		}
+		*sum += *(arr + i);
+
+	}
+	*avrg = *sum / (double) n;
+	return;
+}
+int sameNeighbors(int* arr, int n)
+{
+	if (n < 3) return 0;
+	for (int i = 1; i < n-1; i++)
+	{
+		if (arr[i] == (arr[i-1]+arr[i+1])) return 1;
+	}
+	return 0;
+}
+
+int ascendI(int* arr, int* n, int* veryAsecnd)
+{
+	*veryAsecnd = 1;
+	for (int i = 1; i < *n - 1; i++)
+	{
+		if (arr[i] >= arr[i + 1])
+		{
+			*veryAsecnd = 0;
+		}
+		if (arr[i] > arr[i+1])
+		{
+			return  0;
+		}
+	}
+	return 1;
+}
+
+int ascendRec(int* arr, int n, int* veryAscend)
+{
+	int result;
+	if (n = 1)
+		*veryAscend = 1;
+		return 1;
+
+	result = ascendRec(arr + 1, n - 1, veryAscend);
+	if (result && arr[n-1] == arr[n-2])
+	{
+		*veryAscend = 0;
+	}
+	if (result && arr[n - 1] < arr[n - 2])
+	{
+		*veryAscend = 0;
+		return 0;
+	}
+
+}
