@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+char countChar(char* string, int* n);
+
+void main()
+{
+	char s1[30] = "asbdadsaddd";
+	int n=0;
+	printf("most used char: %c, %d times", countChar(s1, &n), n);
+	
+}
+
+char countChar(char* string, int* n)
+{
+	int abc[26];
+	size_t i = 0;
+	for (i = 0; i < strlen(string); i++)
+	{
+		if (string[i] != ' ')
+		{
+			abc[string[i] - 'a']++;
+		}
+	}
+
+	int pos = 0;
+	for (i = 0; i < n; i++)
+	{
+		if (abc[i] > abc[pos]) 
+		{
+			pos = i;
+		}
+	}
+	*n = abc[pos];
+	free(abc);
+	return (pos+'a');
+
+}
