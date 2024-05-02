@@ -1,0 +1,85 @@
+//.cpp file
+#include "Square.h"
+#include <iostream>
+using namespace std;
+
+int main()
+{
+
+	return 0;
+}
+
+// Constructors
+Square::Square(double centerX, double centerY, double size)
+{
+	x = centerX;
+	y = centerY;
+	edgeSize = size;
+}
+Square::Square(double size)
+{	
+	x = 0;
+	y = 0;
+	edgeSize = size;
+}
+Square::Square() 
+{
+	x = 0;
+	y = 0;
+	edgeSize = 0;
+}
+// Destuctor
+Square::~Square() {
+	// Optionally, add any cleanup code here
+	std::cout << "Square object destroyed" << std::endl;
+
+};
+
+// Getters
+double Square::getX() { return x; }
+double Square::getY() { return y; }
+double Square::getEdgeSize() { return edgeSize; }
+
+// Setters
+void Square::setX(double newX) { x = newX; }
+void Square::setY(double newY) { y = newY; }
+void Square::setEdgeSize(double newSize) { edgeSize = newSize; }
+
+void Square::printObj() { std::cout << "Square position is: (" << x << "," << y << ") with edges of: " << edgeSize << std::endl; }
+double Square::area() { return edgeSize * edgeSize; }
+bool Square::inSquare(double posX, double posY) 
+{
+	if (posX > x && posX < x+edgeSize && posY > y && posY < y + edgeSize) return true;
+	return false; 
+}
+
+//.h file
+#pragma once
+
+class Square
+{
+private:
+	double x, y; // xy coordinates of the square's center
+	double edgeSize; // size of the square's edge
+
+public:
+	// Constructors
+	Square(void);
+	Square(double centerX, double centerY, double size);
+	Square(double size);
+	~Square();
+
+	// Getters
+	double getX();
+	double getY();
+	double getEdgeSize();
+	// Setters
+	void setX(double newX);
+	void setY(double newY);
+	void setEdgeSize(double newSize);
+	// Functions
+	void printObj();
+	double area();
+	bool inSquare(double posX, double posY);
+
+};
