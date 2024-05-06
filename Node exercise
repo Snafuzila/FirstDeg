@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node
+{
+    int data;
+    struct Node* next;
+} Node;
+
+int evenOddNode(struct Node** l1, struct Node** l2);
+void freeNode(struct Node* node);
+void printNode(struct Node* node);
+
+int main() 
+{
+    Node* dummyEven, *dummyOdd;
+    int sum = evenOddNode(&dummyEven, &dummyOdd);
+
+}
+/*
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return(NULL);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+struct Node* createNode() {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    newNode->data = 0;  // Set default value for data
+    newNode->next = NULL;
+    return newNode;
+}
+void insertAfter(struct Node* prev_node, int new_data)
+{
+    // 1. Check if the given prev_node
+    // is NULL
+    if (prev_node == NULL)
+    {
+        printf("the given previous node cannot be NULL");
+        return;
+    }
+    // 2. Allocate new node
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    // 3. Put in the data
+    new_node->data = new_data;
+    // 4. Make next of new node as next
+    // of prev_node
+    new_node->next = prev_node->next;
+    // 5. Move the next of prev_node
+    // as new_node
+    prev_node->next = new_node;
+}
+*/
+
+void freeNode(struct Node* node) 
+{
+    Node* temp = node;
+    while (temp!=NULL)
+    {
+        node = node->data;
+        free(temp);
+        temp = node;
+
+    }
+    return;
+}
+void printNode(struct Node* node)
+{
+    while (node)
+    {
+        printf("%d->", node->data);
+    }
+    printf("NULL\n");
+    return;
+}
+int evenOddNode(struct Node** dummyEven, struct Node** dummyOdd)
+{
+    Node* evenList, * oddList;
+    int temp, counter = 0;
+
+    scanf("%d", &temp);
+    while (temp != -1)
+    {
+        ++counter;
+        if (temp % 2)
+        {
+            insertAfter(dummyOdd, temp);
+        }
+        else
+        {
+            insertAfter(dummyEven, temp);
+        }
+    }
+    return counter;
+}
