@@ -1,0 +1,104 @@
+#pragma once
+#include <iostream>
+
+class Complex {
+private:
+	double real;
+	double imaginary;
+public:
+	Complex() { real = 0, imaginary = 0; }
+	Complex(double r, double i) { real = r, imaginary = i; }
+	~Complex() {};
+
+
+	double getReal() const { return this->real; }
+	double getImaginary() const { return this->imaginary; }
+	void setReal(const double r) { this->real = r; }
+	void setImaginary(const double i) { this->imaginary = i; }
+
+
+	Complex operator+(const Complex& other) const;
+	Complex operator-(const Complex& other) const;
+	Complex operator*(const Complex& other) const;
+	Complex operator/(const Complex& other) const;
+	Complex &operator=(const Complex& other);
+
+	friend std::ostream& operator<< (std::ostream&, const Complex&);
+
+};
+#pragma once
+
+//int n = x + y + z
+
+
+
+#include <stdio.h>
+#include "Complex.h"
+#include <sstream> // for std::istringstream
+using namespace std;
+
+Complex Complex::operator+(const Complex& other) const
+{
+	return Complex(this->real + other.real, this->imaginary + other.imaginary);
+}
+Complex Complex::operator-(const Complex& other) const
+{
+	return Complex(this->real -other.real, this->imaginary - other.imaginary);
+}
+Complex Complex::operator*(const Complex& other) const
+{
+	return Complex((this->real*other.real)-(this->imaginary*other.imaginary), (this->real*other.imaginary) + (this->imaginary*other.real));
+}
+Complex Complex::operator/(const Complex& other) const
+{
+	Complex fill = Complex(other.real, -other.imaginary);
+	return Complex( ((*this)*fill).real / (fill*other).real	, ((*this) * fill).imaginary / (fill * other).real);
+}
+Complex& Complex::operator=(const Complex& other)
+{
+	if (this != &other)
+	{
+		this->real = other.real;
+		this->imaginary = other.imaginary;
+	}
+	return *this;
+}
+std::ostream& operator<<(std::ostream& out, const Complex& complex)
+{
+	out << "" << complex.real << " " << complex.imaginary << "i" << endl;
+	return out;
+}
+
+
+void main()
+{
+	
+	Complex c1(1.0, -4.0);
+	cout << "c1: " << c1;
+	Complex c2(15.0, 1.0);
+	cout << "c2: " << c2;
+	Complex c3 = c1 + c2;
+	cout << "c3: " << c3;
+	
+	c2 = c2 + c1;
+	cout << "c2 = c2+c1  " << c2;
+	cout << "c2: " << c2 << endl;
+	c2 = c2 * c1;
+	cout << "c2 = c2*c1  " << c2;
+	cout << "c2: " << c2 << endl;
+	c2 = c2 / c1;
+	cout << "c2 = c2/c1  " << c2;
+	cout << "c2: " << c2 << endl;
+	c2 = c2 - c1;
+	cout << "c2 = c2-c1" << c2;
+	cout << "c2: " << c2 << endl;
+
+	c3 = c1 + c2;
+	cout << c2;
+	c3 = c1 - c2;
+	cout << c2;
+	c3 = c1 * c2;
+	cout << c2;
+	c3 = c1 / c2;
+	cout << c2;
+}
