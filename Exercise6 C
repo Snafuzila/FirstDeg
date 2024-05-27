@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define COLS 10
+#define SIZE 4
+
+void swapRows1(void** A, int row1, int row2);
+void swapRows2(void** A, int row1, int row2);
+void swapCols(int** A, int rows, int col1, int col2);
+
+void free_matrix(void** c, int n);
+void printDynamicMatrix(int** A, int rows, int cols); // same as print static matrix but with different decleration
+int** alloc_matrix(int rows, int cols);
+void randMatrix(int** A, int rows, int cols);
+
+
+
+
+int main()
+{
+	time_t t;
+	srand((unsigned)time(&t));
+
+	int** A = alloc_matrix(SIZE, SIZE);
+	randMatrix(A, SIZE, SIZE);
+	printDynamicMatrix(A, SIZE, SIZE);
+
+	swapRows1(A, 0, 1);
+	printDynamicMatrix(A, SIZE, SIZE);
+	swapCols(A, SIZE, 2, 3);
+	printDynamicMatrix(A, SIZE, SIZE);
+	free_matrix(A, SIZE);
+
+	return 0;
+}
+
+void swapRows1(void** A, int row1, int row2)
+{
+	void* temp = A[row1];
+	A[row1] = A[row2];
+	A[row2] = temp;
+}
+void swapRows2(void** A, int row1, int row2)
+{
+	void* temp = *(A+row1);
+	*(A+row1) = *(A+row2);
+	*(A+row2) = temp;
+}
+
+void swapCols(int** A, int rows, int col1, int col2)
+{
+	int temp;
+	for (int i = 0; i < rows; i++)
+	{
+		temp = A[i][col1];
+		A[i][col1] = A[i][col2];
+		A[i][col2] = temp;
+	}
+}
+
+void free_matrix(void** c, int n)
+{
+	int i;
+	for (i = 0; i < n; i++) // run over all rows to free all arrays
+		free(c[i]);
+	free(c);
+}
+void printDynamicMatrix(int** A, int rows, int cols) // same as print static matrix but with different decleration
+{
+	printf("Your Dynamic matrix is:\n");
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			printf("%3d ", A[i][j]);
+		}
+		printf("\n");
+	}
+}
+int** alloc_matrix(int rows, int cols)
+{
+	int** c, i;
+	c = (int**)calloc(rows, sizeof(int*)); // matrix is two dimention array. 1st dim
+	if (!c)
+		return NULL;
+	for (i = 0; i < rows; i++)
+	{
+		c[i] = (int*)calloc(cols, sizeof(int)); //2nd dim.
+		if (!c[i])
+		{
+			free_matrix(c, i);
+			return NULL;
+		}
+	}
+	return c;
+}
+void randMatrix(int** A, int rows, int cols)
+{
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			A[i][j] = rand() % 10;
+		}
+	}
+}
