@@ -1,0 +1,402 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+/* Libraries */
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <math.h>
+#include <assert.h>
+#include <string.h>
+
+/* Constant definitions */
+#define N 3
+#define ROWS 4
+#define COLS 5
+
+/* Type definitions */
+typedef struct number
+{
+	unsigned long long num;
+	int sum;                        //sum digits
+} Number;
+typedef struct triad
+{
+	int i, j, value;
+} Triad;
+typedef struct item
+{
+	Triad data;
+	struct item* next;
+} Item;
+
+/* Function declarations */
+void Ex1();
+void Ex2();
+void Ex3();
+
+Number* primeSums(unsigned long long n1, unsigned long long n2, int* p_size);
+int** matrixMaxNeighbor(int A[][COLS], int rows, int cols);
+void createThreeLists(int** A, int rows, int cols, Item** pL1, Item** pL2);
+
+/* Declarations of auxiliary functions */
+int isPrime(int num);
+int digitSum(unsigned long long num);
+int maximum(int a, int b);
+
+int neighborMax(int A[][COLS], int rows, int cols, int i, int j);
+int** alloc_matrix(int rows, int cols);
+
+Triad createThree(int i, int j, int value);
+
+void printArray(Number* arr, int size);
+void inputMatrix(int A[][COLS], int rows, int cols);
+void printMatrix(int A[][COLS], int rows, int cols);
+void printDynamicMatrix(int** A, int rows, int cols);
+void inputDynamicMatrix(int** A, int rows, int cols);
+void free_matrix(void** c, int n);
+void printList(Item* lst);
+void freeList(Item* lst);
+Item* insert(Item** pL, Triad data);
+
+/* ------------------------------- */
+
+int main()
+{
+	int select = 0, i, all_Ex_in_loop = 0;
+	printf("Run menu once or cyclically?\n(Once - enter 0, cyclically - enter other number) ");
+	if (scanf_s("%d", &all_Ex_in_loop) == 1)
+		do
+		{
+			for (i = 1; i <= N; i++)
+				printf("Ex%d--->%d\n", i, i);
+			printf("EXIT-->0\n");
+			do {
+				select = 0;
+				printf("please select 0-%d : ", N);
+				scanf_s("%d", &select);
+			} while ((select < 0) || (select > N));
+			switch (select)
+			{
+			case 1: Ex1(); break;
+			case 2: Ex2(); break;
+			case 3: Ex3(); break;
+			}
+		} while (all_Ex_in_loop && select);
+		return 0;
+}
+
+
+/* Function definitions */
+void Ex1() 
+{
+	int size = 0;
+	unsigned long long num1, num2;
+	printf("please enter two numbers for range.\nfirst number: ");
+	scanf_s("%llu", &num1);
+	printf("second number: ");
+	scanf_s("%llu", &num2);
+
+	Number* arr_prime = primeSums(num1, num2, &size); // initialize arr_prime
+	printArray(arr_prime, size); // calls print
+	printf("\nsize: %d", size);
+	free(arr_prime); // free array
+}
+void Ex2()
+{
+	/*
+	int rows, cols; // let user define matrix size
+	printf("Enter the number of rows: ");
+	scanf_s("%d", &rows);
+	printf("Enter the number of columns: ");
+	scanf_s("%d", &cols);
+	inputMatrix(A, rows, cols); // input values from user
+	printMatrix(A, rows, cols); // print to check values
+	*/
+	int A[ROWS][COLS]; // create matrix the size of rows X cols
+	int** maxNeighborMatrix = NULL; // matrix B
+;
+	inputMatrix(A, ROWS, COLS); // input values from user
+	printMatrix(A, ROWS, COLS); // print to check values
+
+
+	maxNeighborMatrix = matrixMaxNeighbor(A, ROWS, COLS); // create+return Ex2 matrix
+	printDynamicMatrix(maxNeighborMatrix, ROWS, COLS);
+
+	free_matrix(maxNeighborMatrix, ROWS);
+}
+void Ex3()
+{
+	int row, col;
+	Item* L1 = NULL, *L2 = NULL;
+
+	printf("please enter the size of matrix\n rows: "); // recieve matrix size from user
+	scanf_s("%d", &row);
+	printf("cols: ");
+	scanf_s("%d", &col);
+	int** A = alloc_matrix(row, col); //allocate matrix with values from user
+	inputDynamicMatrix(A, row, col);
+	printDynamicMatrix(A, row, col);
+
+	createThreeLists(A, row, col, &L1, &L2); //create two lists with the rules in question3
+
+	printf("List L1:\n");
+	printList(L1);
+	printf("List L2:\n");
+	printList(L2);
+	
+	freeList(L1);
+	freeList(L2);
+}
+
+/* ---------E1--------- */
+int isPrime(int num) //input number, output 1 if prime, 0 if not
+{
+	int i;
+	if (num == 1)
+		return 0; // one isnt prime;
+	for (i = 2; i*i <= num; i++) //we check until square(num)
+	{
+		if (num % i == 0)
+			return 0;
+	}
+	return 1; //if i passed square(num) its prime
+}
+int digitSum(unsigned long long num) //input long num, output sum of digits
+{
+	int sum_digits = 0;
+	while (num != 0) 
+	{
+		sum_digits += num % 10; //add the lsb to sum and then devide by 10 to get the next digit
+		num = num / 10;
+	}
+	return sum_digits;
+}
+Number* primeSums(unsigned long long n1, unsigned long long n2, int* p_size) //input range of nubmers and &size return array and pass size of arr 
+{
+	unsigned long long i = n1; // start run on n1
+	int j = 0, size = 2;
+	*p_size = 0;
+	Number *arr_prime_Numbers, *temp;
+
+	arr_prime_Numbers = temp = (Number*)realloc(NULL, size * sizeof(Number));//malloc(size * sizeof(int))
+	if (!temp) return NULL;
+	while (temp && i <= n2) //successful allocation
+	{
+		if (isPrime(digitSum(i))) // if i digit sum is prime
+		{
+			arr_prime_Numbers = temp; // we use temp incase allocation fails. we odnt want to lose data
+			arr_prime_Numbers[j].num = i; // put values in array currect position
+			arr_prime_Numbers[j].sum = digitSum(i);
+			j++; // moves to next position in array
+			if (j == size)  //memory fully consumed
+			{
+				size *= 2;
+				temp = (Number*)realloc(arr_prime_Numbers, size * sizeof(Number)); //allocate x2 bigger array
+			}
+
+		}
+		i++; // moves to next number in range n1 <= num <= num2
+	}
+	*p_size = j; // pass array size
+	arr_prime_Numbers = (Number*)realloc(arr_prime_Numbers, *p_size * sizeof(Number)); // WE HUNDLE WARNING NEXT LINE! cut array to only the used cells
+	if (arr_prime_Numbers == NULL) return temp; // in case of realloc fail we return the uncut array
+	return arr_prime_Numbers;
+}
+void printArray(Number* arr, int size)
+{
+	int i;
+	printf("num \t");
+	for (i = 0; i < size; i++) // print numbers in range
+	{
+		printf("%llu \t", arr[i].num);
+	}
+	printf("\nsum \t");
+	for (i = 0; i < size; i++) // print the prime sum of numbers
+	{
+		printf("%d \t", arr[i].sum);
+	}
+
+}
+
+/* ---------E2--------- */
+int** matrixMaxNeighbor(int A[][COLS], int rows, int cols)
+{
+	int i, j;
+	int** B = alloc_matrix(rows, cols); // create matrix B using function
+	for (i = 0;i < rows; i++) // run the length of rows
+	{
+		for (j = 0; j < cols; j++) //run the length of cols
+		{
+			B[i][j] = neighborMax(A, rows, cols, i, j); // initialzing B matrix with max value from neighbors in A matrix
+		}
+	}
+	return B;
+}
+int neighborMax(int A[][COLS], int rows, int cols, int i, int j) 
+{
+	// if (!A || i >= rows || j >= cols || (rows <= 1 && cols <= 1)) return -1;
+	// if matrix is NULL, index out of range or no neigbhors, return NULL
+	// we must give some number in case of error even though you said all values are currect . we chose -1.
+
+	int biggest = 2147483648; // variable with max neighbor of A[i][j]. we give 'biggest' the smallest possible integer
+	// the number is without '-' becasue the msb is 1 so it is actually minus.
+	if (i > 0)
+		biggest = maximum(biggest, A[i - 1][j]); // first row
+	if (i < rows-1)
+		biggest = maximum(biggest, A[i + 1][j]); // last row
+	if (j > 0)
+		biggest = maximum(biggest, A[i][j-1]); // first col
+	if (j < cols-1)
+		biggest = maximum(biggest, A[i][j+1]); // last col
+	return biggest;
+}
+int** alloc_matrix(int rows, int cols)
+{
+	int** c, i;
+	c = (int**)calloc(rows, sizeof(int*)); // matrix is two dimention array. 1st dim
+	if (!c)
+		return NULL;
+	for (i = 0; i < rows; i++)
+	{
+		c[i] = (int*)calloc(cols, sizeof(int)); //2nd dim.
+		if (!c[i])
+		{
+			free_matrix(c, i);
+			return NULL;
+		}
+	}
+	return c;
+}
+void inputMatrix(int A[][COLS], int rows, int cols)
+{
+	int i, j;
+	printf("Enter the elements of the matrix:\n"); // title
+	for (i = 0; i < rows; ++i)
+	{
+		for (j = 0; j < cols; ++j)
+		{
+			printf("[%d][%d] = ", i, j); // headline
+			scanf_s("%d", &A[i][j]); // scanf_s
+		}
+	}
+}
+void inputDynamicMatrix(int **A, int rows, int cols)
+{
+	int i, j;
+	printf("Enter the elements of the matrix:\n"); // title
+	for (i = 0; i < rows; ++i)
+	{
+		for (j = 0; j < cols; ++j)
+		{
+			printf("[%d][%d] = ", i, j); // headline
+			scanf_s("%d", &A[i][j]); // scanf_s
+		}
+	}
+}
+void printMatrix(int A[][COLS], int rows, int cols)
+{
+	int i, j;
+	printf("Your matrix is:\n");
+	for (i = 0; i < rows; ++i)
+	{
+		for (j = 0; j < cols; ++j)
+		{
+			printf("%3d ", A[i][j]); // print with format of 3 space
+		}
+		printf("\n"); // \n between rows
+	}
+}
+void printDynamicMatrix(int** A, int rows, int cols) // same as print static matrix but with different decleration
+{
+	int i, j;
+	printf("Your Dynamic matrix is:\n");
+	for (i = 0; i < rows; ++i)
+	{
+		for (j = 0; j < cols; ++j)
+		{
+			printf("%3d ", A[i][j]);
+		}
+		printf("\n");
+	}
+}
+int maximum(int a, int b)
+{
+	if (a > b)
+	{
+		return a;
+	}
+	return b;
+}
+void free_matrix(void** c, int n)
+{
+	int i;
+	for (i = 0; i < n; i++) // run over all rows to free all arrays
+		free(c[i]);
+	free(c);
+}
+
+/* ---------E3--------- */
+Triad createThree(int i, int j, int value) // initialize Triad with values
+{
+	Triad newTrade;
+	newTrade.i = i;
+	newTrade.j = j;
+	newTrade.value = value;
+	return newTrade;
+}
+void createThreeLists(int** A, int rows, int cols, Item** pL1, Item** pL2)
+{
+	int i, j;
+	*pL1 = NULL; // first list rule
+	*pL2 = NULL; // second list rule
+
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			if (A[i][j] == i + j) // if stands in rules of first list we insert new item to L1
+			{
+				insert(pL1, createThree(i, j, A[i][j]));
+			}
+
+			if (j - i == A[i][j] - j) // if stands in rules of second list we insert new item to L2
+			{
+				insert(pL2, createThree(i, j, A[i][j]));
+
+			}
+		}
+	}
+}
+Item* insert(Item** pL, Triad data) // create and connect new node to list
+{
+	Item* newItem = (Item*)malloc(sizeof(Item));  // Allocate memory for the new item
+	if (newItem == NULL)
+	{
+		return NULL;
+	}
+	newItem->data = data;
+	newItem->next = *pL;
+
+	*pL = newItem;// Update the head of the list to the new item
+	return *pL;
+}
+void printList(Item* lst)
+{
+	Item* current = lst;
+	while (current != NULL) //print until last node
+	{
+		printf("(%d, %d, %d) -> ", current->data.i, current->data.j, current->data.value);
+		current = current->next;
+	}
+	printf("NULL\n");
+}
+void freeList(Item* lst)
+{
+	while (lst != NULL)// Free  lists
+	{
+		Item* temp = lst;
+		lst = lst->next;
+		free(temp);
+	}
+}
+/* ------------------- */
