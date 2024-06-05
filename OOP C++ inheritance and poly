@@ -1,0 +1,158 @@
+//Queue.h
+#pragma once
+#include <iostream>
+
+// Node structure for linked list
+struct Contact {
+    char name[20];
+    char number[13];
+    // Member function
+};
+struct Node {
+    Contact contact;
+    Node* next;
+};
+
+
+
+// Queue class
+class Queue {
+private:
+    Node* frontNode; // Pointer to the front node
+    Node* rearNode;  // Pointer to the rear node
+    int count;
+
+public:
+    // Constructor
+    Queue() {
+        frontNode = nullptr;
+        rearNode = nullptr;
+        count = 0;
+    }
+
+    // Destructor
+    ~Queue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    // Check if the queue is empty
+    bool isEmpty() {
+        return frontNode == nullptr;
+    }
+
+    // Add an element to the queue
+    void enqueue(const Node &value) {
+        Node* newNode = new Node();
+        strcpy(newNode->contact.name, value.contact.name);
+        strcpy(newNode->contact.number, value.contact.number);
+        newNode->next = nullptr;
+        if (rearNode != nullptr) {
+            rearNode->next = newNode;
+        }
+        rearNode = newNode;
+        if (frontNode == nullptr) {
+            frontNode = rearNode;
+        }
+        count++;
+        if (count > 10) dequeue();
+    }
+
+    // Remove an element from the queue
+    void dequeue() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty. Cannot dequeue." << std::endl;
+            return;
+        }
+        Node* tempNode = frontNode;
+        frontNode = frontNode->next;
+        if (frontNode == nullptr) {
+            rearNode = nullptr;
+        }
+        delete tempNode;
+        count++;
+    }
+
+    // Get the front element of the queue
+    Contact front() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty." << std::endl;
+            Contact c1 = { 0, 0 };
+            return c1;// Return a dummy value
+        }
+        return frontNode->contact;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Queue& queue)
+    {
+        int i = 1;
+        Node* current = queue.frontNode;
+        while (current != nullptr) {
+            os << i << ": Name: " << current->contact.name << ", Number: " << current->contact.number << std::endl;
+            i++;
+            current = current->next;
+        }
+        return os;
+    }
+};
+//phone.h
+#pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include "Queue.h"
+using namespace std;
+class Phone
+{
+public:
+	Phone() {};
+	~Phone() {};
+
+	virtual void acceptCall(int) = 0;
+	virtual void dialNumber(int) = 0;
+	virtual void ShowOutGoing()
+	{
+		cout << "Out calls: " << OutGoing;
+	};
+	virtual void ShowInGoing();
+	
+private:
+	Queue OutGoing;
+	Queue InComing;
+};
+//linephone.h
+#pragma once
+#include "Phone.h"
+
+
+class LinePhone :  protected Phone
+{
+public:
+	LinePhone() {};
+	virtual ~LinePhone() {};
+	void acceptCall(int num);
+	void dialNum(int num);
+	//virtual void acceptCall(int);
+	//virtual void dialNumber(int);
+private:
+	//Queue ShowOutGoing();
+	//Queue ShowInGoing();
+};
+//callnocam.h
+#pragma once
+#include "Phone.h"
+
+class CellNoCam : protected Phone {
+public:
+	CellNoCam() {};
+	virtual ~CellNoCam() {};
+
+	virtual void acceptCall(int);
+	virtual void dialNumber(int);
+private:
+	int [];
+
+	Queue ShowOutGoing();
+	Queue ShowInGoing();
+
+};
