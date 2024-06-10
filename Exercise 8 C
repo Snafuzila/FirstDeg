@@ -1,0 +1,78 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <string.h>
+
+int reverseWord(char* str);
+void stringData(char* str, int* countUp, int* countLow, int* countNum, int* countOther);
+void shortenSpace(char* str);
+
+
+int main()	
+{
+	/*
+	int countUp, countLow, countNum, countOther;
+	char s1[] = "12345abcdABC%^&";
+	puts(s1);
+	stringData(s1, &countUp, &countLow, &countNum,&countOther);
+	printf("%d %d %d %d\n", countUp, countLow, countNum, countOther);
+	reverseWord(s1);
+	puts(s1);
+	*/
+	char s2[] = "I     LIVE IN  ISRAEL";
+	puts(s2);
+	shortenSpace(s2);
+	puts(s2);
+	return 0;
+}
+
+int reverseWord(char* str)
+{
+	if (!str) return 1;
+	char* start = NULL, * end = NULL, temp = 0;
+	end = str + strlen(str) - 1;
+	start = str;
+	
+	while (start<end)
+	{
+		temp = *start;
+		*start = *end;
+		*end = temp;
+		start++;
+		end--;
+	}
+	return 0;
+}
+void stringData(char* str, int* countUp, int* countLow, int* countNum, int* countOther)
+{
+	*countUp = *countLow = *countNum = *countOther = 0;
+	char* temp = str;
+	while (*temp != '\0')
+	{
+		if (*temp >= 'a' && *temp <= 'z') (*countLow)++;
+		else if (*temp >= 'A' && *temp <= 'Z') (*countUp)++;
+		else if (*temp >= '0' && *temp <= '9') (*countNum)++;
+		else (*countOther)++;
+		temp++;
+	}
+	temp = NULL;
+	return;
+}
+void shortenSpace(char* str)
+{
+	char* temp = str;
+	int countSpace = 0;
+	while (*temp != '\0')
+	{
+		if (*temp == ' ') countSpace++;
+		if (*temp != ' ')
+		{
+			if (countSpace > 1)
+			{
+				strcpy(temp - countSpace+1, temp);
+			}
+			countSpace = 0;
+		}
+		temp++;
+	}
+}
