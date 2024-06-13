@@ -1,0 +1,48 @@
+#pragma once
+template<class T> struct node
+{
+	T value;
+	bool isFirst;
+	node<T>* next;
+};
+template <class T> class Queue
+{
+private:
+	node* front;
+	node* rear;
+public:
+	queue(const node& item)
+	{
+		front = item;
+		rear = item;
+	};
+	~queue()
+	{
+		while (!isEmpty) dequeue(); 
+	};
+	void insert(node item);
+	T dequeue();
+	bool isEmpty();
+	void freeQueue();
+};
+
+#include <stdio.h>
+#include "Header.h"
+
+template <class T> T Queue <T> ::insert(node item)
+{
+	item.next = this.rear;
+	this.rear = item;
+}
+template <class T> T Queue <T> ::dequeue()
+{
+
+}
+template <class T> bool Queue <T> ::isEmpty()
+{
+
+}
+template <class T> void Queue <T> ::freeQueue()
+{
+
+}
