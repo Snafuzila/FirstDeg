@@ -1,0 +1,102 @@
+#include <stdio.h>
+//#define PATH "C:\Users\student\source\repos\ex 9\ex 9"
+
+int countLines(char* filename)
+{
+	FILE* pfile; int lines = 0; char s1[30];
+	int err = fopen_s(&pfile, filename, "r");
+	if (err != 0) {
+		perror("Error opening file");
+		return -1; // Return an error code
+	}
+
+	while (fgets(s1, sizeof(s1), pfile) != NULL)
+	{
+		lines++;
+	}
+	fclose(pfile);
+	return lines;
+}
+
+void letterFrequency(char* filename, int counts[])
+{
+	FILE* pfile; char c1;
+	int err = fopen_s(&pfile, filename, "r");
+	if (err != 0)
+	{
+		perror("Error opening file");
+		return -1;
+	}
+	while ((c1 = fgetc(pfile)) != EOF)
+	{
+		if (c1 >= 'a' && c1 <= 'z')
+			counts[c1 - 'a']++;
+		else if (c1 >= 'A' && c1 <= 'Z')
+			counts[c1 - 'A']++;
+	}
+	fclose(pfile);
+}
+
+void delSpace(char* str)
+{
+	char* temp = str;
+	while (*temp != '\0')
+	{
+		if (*temp == ' ')
+		{
+			strcpy(temp, temp+1);
+		}
+		else temp++;
+	}
+}
+
+void removeSpaces(char* infile, char* outfile)
+{
+	FILE* pinfile = NULL, *poutfile = NULL;
+	char tempString[50];
+	int lines = countLines(infile);
+	int err = fopen_s(&pinfile, infile, "r");
+	if (err != 0)
+	{
+		perror("Error opening file");
+		return; // Return an error code
+	}
+	err = fopen_s(&poutfile, outfile, "w");
+	if (err != 0) {
+		perror("Error opening file");
+		fclose(pinfile);
+		return; // Return an error code
+	}
+
+	while (fgets(tempString, sizeof(tempString), pinfile) != NULL)
+	{
+		delSpace(tempString);
+		fputs(tempString, poutfile);
+	}
+	fclose(poutfile);
+	fclose(pinfile);
+}
+
+int main()
+{
+	/*
+	int numLines;
+	numLines = countLines("input.txt");
+	printf("The number of lines is %d", numLines);
+
+	int counts[26] = {0};
+	letterFrequency("input.txt", counts);
+	printf("Letter frequencies:\n");
+	for (char c = 'A'; c <= 'Z'; c++) 
+	{
+		printf("%c: %d\n", c, counts[c - 'A']);
+	}
+	*/
+
+
+	// Prompt the user to enter the input file name
+
+	removeSpaces("infile.txt", "outfile.txt");
+	return 0;
+}
+
