@@ -1,0 +1,166 @@
+/*
+	Assigned by:
+	Student1_Full_Name #ID
+	Student2_Full_Name #ID
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
+
+/* Libraries */
+
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h> //for strcmp
+
+/* Constant definitions */
+
+#define N 3
+
+/* Function declarations */
+
+void Ex1();
+void Ex2();
+void Ex3();
+
+char** split(char letter, char* str, int* p_size);
+void createFile(char* filename);
+char commonestLetter(char* filename);
+void decode(char* text);
+
+/* Declarations of auxiliary functions */
+
+void printStringsArray(char** str_arr, int size);
+void freeMatrix(void** A, int rows);
+
+/* ------------------------------- */
+
+int main()
+{
+	Ex2();
+
+
+	/*
+	int select = 0, i, all_Ex_in_loop = 0;
+	printf("Run menu once or cyclically?\n(Once - enter 0, cyclically - enter other number) ");
+	if (scanf("%d", &all_Ex_in_loop) == 1)
+		do
+		{
+			for (i = 1; i <= N; i++)
+				printf("Ex%d--->%d\n", i, i);
+			printf("EXIT-->0\n");
+			do {
+				select = 0;
+				printf("please select 0-%d : ", N);
+				scanf("%d", &select);
+			} while ((select < 0) || (select > N));
+			switch (select)
+			{
+			case 1: Ex1(); break;
+			case 2: Ex2(); break;
+			case 3: Ex3(); break;
+			}
+		} while (all_Ex_in_loop && select);
+	*/
+	
+	return 0;
+}
+
+
+/* Function definitions */
+
+void Ex1()
+{
+	/* Called functions:
+		split, printStringsArray, freeMatrix */
+		/* Write Code Here! */
+}
+
+void Ex2()
+{
+	char* filename = "input";
+	createFile(filename);
+	printf("%c", commonestLetter(filename));
+}
+
+void Ex3()
+{
+	/* Called functions:
+		decode */
+		/* Write Code Here! */
+}
+
+char** split(char letter, char* str, int* p_size)
+{
+	/* Write Code Here! */
+}
+
+void createFile(char* filename)
+{
+	FILE* pfile = NULL; // pointer to file
+	char inputString[64]; // assume lines are smaller than 65 chars.
+	pfile = fopen(filename, "w"); //open for write, if not exist it will create it
+	if (!pfile) // error hundling
+	{
+		printf("file failed to open\n");
+		return;
+	}
+
+	printf("Enter text for file %s.txt\nto finish enter empty line\n", filename);
+	fgets(inputString, sizeof(inputString), stdin); // must be out of loop to check first iteration
+	while (strcmp(inputString, "\n") != 0) //whenever input equals empty line we finish.
+	{
+		if (fputs(inputString, pfile) == EOF) // failed to write text error hundeling
+		{
+			printf("error writing to file\n");
+			fclose(pfile);
+			return;
+		}
+		fgets(inputString, sizeof(inputString), stdin); //keep reading until break loop
+	}
+	printf("text was written succesfully\n");
+	fclose(pfile);
+}
+char commonestLetter(char* filename)
+{
+		int counts[26] = { 0 }; // counter array
+		FILE* pfile = NULL;
+		char c1;
+		int charCount = 0;
+		pfile = fopen(filename, "r"); //open file to read mode
+		if (pfile == NULL) //hundle reading error
+		{
+			printf("Error opening file");
+			return '\0';
+		}
+		while ((c1 = fgetc(pfile)) != EOF) //checking each char until end of file
+		{
+			if (c1 >= 'a' && c1 <= 'z')
+				counts[c1 - 'a']++;
+			else if (c1 >= 'A' && c1 <= 'Z')
+				counts[c1 - 'A']++;
+		}
+		fclose(pfile);
+
+		c1 = 'A'; //reseting c1 to first letter, it must have first value to compare with others. if file is empty we check charCount
+		for (size_t i = 0; i < 26; i++) // find which letter was written the most
+		{
+			if (counts[i] >= charCount) // if letter more times than last letter then update c1 and charCount
+			{
+				charCount = counts[i];
+				c1 = 'A' + i;
+			}
+		}
+		if (charCount == 0) return '\0'; // if charCount is 0 meaning all letters were 0
+		return c1; 
+}
+
+void decode(char* text)
+{
+	/* Write Code Here! */
+}
+
+/* Definitions of auxiliary functions */
+
+/* Write Definitions Here! */
+
+/* ------------------- */
