@@ -12,6 +12,11 @@
 #include <malloc.h>
 #include <string.h> //for strcmp
 
+#include <memory.h>
+#include <stdlib.h>
+#include <assert.h>
+
+
 /* Constant definitions */
 
 #define N 3
@@ -49,6 +54,7 @@ int main()
 				select = 0;
 				printf("please select 0-%d : ", N);
 				scanf("%d", &select);
+
 			} while ((select < 0) || (select > N));
 			switch (select)
 			{
@@ -57,25 +63,51 @@ int main()
 			case 3: Ex3(); break;
 			}
 		} while (all_Ex_in_loop && select);
-	*/
+	
 	
 	return 0;
+	*/
+	Ex1();
 }
-
 
 /* Function definitions */
 
 void Ex1()
 {
-	/* Called functions:
-		split, printStringsArray, freeMatrix */
-		/* Write Code Here! */
+	int size;
+	char str[100], letter;
+
+	printf("Please enter a string: \n");
+	fgets(str, sizeof(str), stdin);
+	str[strcspn(str, "\n")] = '\0';
+	/*gets(str);*/
+
+	printf("Please enter a letter: \n");
+	if (scanf("%c", &letter) !=1) // if scanf fails it return 0 and we handle error in VS22 it has warnings
+	{
+		printf("error reading char\n");
+		return;
+	}
+	char** splitArray = split(letter, str, &size);
+	if (splitArray == NULL)
+	{
+		printf("Error splitting string.\n");
+		return; // Return error code
+	}
+
+	printf("Resulting strings:\n");
+	printStringsArray(splitArray, size);
+	printf("the size of the new array is: %d", size);
+
+	freeMatrix((void**)splitArray, size);
+	return;
 }
 
 void Ex2()
 {
 	char* filename = "input";
 	createFile(filename);
+
 	printf("%c", commonestLetter(filename));
 }
 
@@ -85,13 +117,74 @@ void Ex3()
 	printf("Coded text: %s\n", text);
 	decode(text);
 	printf("Decoded text: %s\n", text);
-
-	return 0;
 }
+
+
 
 char** split(char letter, char* str, int* p_size)
 {
-	/* Write Code Here! */
+	char** temp; // for increasing matrix size by x2
+	char** arr_string; // the matrix we return
+	*p_size = 0;
+
+	if (str == NULL) // Check if input string is NULL
+	{
+		return NULL;
+	}
+
+	int length_str = (int)strlen(str);
+	__int64 i = 0; // we do pointer calculations into int so we changed the type of i
+	int j = 0, size = 2;
+	char* pos_space;
+
+	arr_string = temp = (char**)malloc(size * sizeof(char*));
+	if (!temp) return NULL;
+
+	while (temp && (str[i]!=  '\0'))  //Successful allocation
+	{ //"Rony Goodman got a good mark
+		pos_space = strchr(str + i, ' ');//Find the next space
+		if (!pos_space) //Space character not found
+		{
+			pos_space = str + length_str;// Set pose_space to point to the end of the string
+		}
+
+		if (str[i] == letter || str[i] == letter - 'a' + 'A')
+		{
+			char* word = (char*)malloc((pos_space - str - i + 1) * sizeof(char)); // Dynamic allocation based on the size of the word, including space for null terminator
+			if (word == NULL) //if word* allocation failed we free matrix and return NULL
+			{
+				printf("allocation failed");
+				freeMatrix(arr_string, size);
+				freeMatrix(temp, size);
+				return NULL;
+			}
+			strncpy(word, str + i, (pos_space - str - i)); // Copy the word
+			word[pos_space - str - i] = '\0'; // setting last char to '\0'
+			arr_string[j] = word;
+			j++; // j = position of next free pointer in (**)arr_string
+			if (j == size)  //memory fully 
+			{
+				size *= 2; // we double the size to minimize the times we realloc :)
+				temp = (char**)realloc(arr_string, size * sizeof(char*));
+				if (!temp)
+				{
+
+					freeMatrix((void**)arr_string, *p_size);
+					return NULL;
+				}
+				arr_string = temp; // DO WE REALLY NEED?
+			}
+		}
+		i = (pos_space - str) + 1; // Move to the next word after the space
+	}
+	*p_size = j;//Size of the new array
+	arr_string = (char**)realloc(temp, *p_size * sizeof(char*));
+	if (!arr_string && *p_size>0) // if realloc fails we teturn temp which has all the data but bigger size
+	{
+		return NULL;
+	}
+	freeMatrix(temp, size);
+	return arr_string;
 }
 
 void createFile(char* filename)
@@ -106,14 +199,14 @@ void createFile(char* filename)
 	}
 
 	printf("Enter text for file %s.txt\nto finish tap Ctrl+Z and Enter\n", filename);
-	while (1) //whenever input equals empty line we finish.
+	while (1)
 	{
 		if (fgets(inputString, sizeof(inputString), stdin) == NULL) 
 		{
 			if (feof(stdin)) break;
 			else
 			{
-				printf("error writing to file\n");
+				printf("error reading text\n");
 				fclose(pfile);
 				return;
 			}
@@ -134,7 +227,7 @@ char commonestLetter(char* filename)
 		int counts[26] = { 0 }; // counter array
 		FILE* pfile = NULL;
 		char c1;
-		int charCount = 0;
+		int charCount = 0; // holds the amount of appearence in text
 		pfile = fopen(filename, "r"); //open file to read mode
 		if (pfile == NULL) //hundle reading error
 		{
@@ -151,7 +244,7 @@ char commonestLetter(char* filename)
 		fclose(pfile);
 
 		c1 = 'A'; //reseting c1 to first letter, it must have first value to compare with others. if file is empty we check charCount
-		for (size_t i = 0; i < 26; i++) // find which letter was written the most
+		for (int i = 0; i < 26; i++) // find which letter was written the most
 		{
 			if (counts[i] >= charCount) // if letter more times than last letter then update c1 and charCount
 			{
@@ -180,10 +273,28 @@ void decode(char* text)
 		}
 		i++;
 	}
+	return;
 }
 
 /* Definitions of auxiliary functions */
 
 /* Write Definitions Here! */
+void freeMatrix(void** A, int rows)
+{
+	for (int i = 0; i < rows; i++) {
+		free(A[i]);
+	}
+	free(A);
+}
 
+void printStringsArray(char** str_arr, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		if (str_arr[i] != NULL)
+		{
+			puts(str_arr[i]);
+		}
+	}
+}
 /* ------------------- */
