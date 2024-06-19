@@ -36,9 +36,6 @@ void freeMatrix(void** A, int rows);
 
 int main()
 {
-	Ex2();
-
-
 	/*
 	int select = 0, i, all_Ex_in_loop = 0;
 	printf("Run menu once or cyclically?\n(Once - enter 0, cyclically - enter other number) ");
@@ -84,9 +81,12 @@ void Ex2()
 
 void Ex3()
 {
-	/* Called functions:
-		decode */
-		/* Write Code Here! */
+	char text[] = "Btwlzx Dqqes Eq|pj2 Tjhvqujs Iqoqjy bpg Eqfxtx Xcwwtt";
+	printf("Coded text: %s\n", text);
+	decode(text);
+	printf("Decoded text: %s\n", text);
+
+	return 0;
 }
 
 char** split(char letter, char* str, int* p_size)
@@ -105,18 +105,27 @@ void createFile(char* filename)
 		return;
 	}
 
-	printf("Enter text for file %s.txt\nto finish enter empty line\n", filename);
-	fgets(inputString, sizeof(inputString), stdin); // must be out of loop to check first iteration
-	while (strcmp(inputString, "\n") != 0) //whenever input equals empty line we finish.
+	printf("Enter text for file %s.txt\nto finish tap Ctrl+Z and Enter\n", filename);
+	while (1) //whenever input equals empty line we finish.
 	{
-		if (fputs(inputString, pfile) == EOF) // failed to write text error hundeling
+		if (fgets(inputString, sizeof(inputString), stdin) == NULL) 
 		{
-			printf("error writing to file\n");
+			if (feof(stdin)) break;
+			else
+			{
+				printf("error writing to file\n");
+				fclose(pfile);
+				return;
+			}
+		}
+		//fgets(inputString, sizeof(inputString), stdin); //keep reading until break loop
+		if (fputs(inputString, pfile) == EOF) { // failed to write text error handling
+			printf("Error writing to file\n");
 			fclose(pfile);
 			return;
 		}
-		fgets(inputString, sizeof(inputString), stdin); //keep reading until break loop
 	}
+
 	printf("text was written succesfully\n");
 	fclose(pfile);
 }
@@ -156,7 +165,21 @@ char commonestLetter(char* filename)
 
 void decode(char* text)
 {
-	/* Write Code Here! */
+	int i = 0;
+	int decCharBy = 1; // decCharBy will store the value we should decrease each char
+	while (text[i] != '\0') // end of string
+	{
+		if (text[i] == ' ') // when encountering 'space' we reset decCharBy and skip to next char.
+		{
+			decCharBy = 1;
+		}
+		else
+		{
+			text[i] = text[i] - decCharBy;
+			decCharBy++;
+		}
+		i++;
+	}
 }
 
 /* Definitions of auxiliary functions */
