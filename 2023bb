@@ -1,0 +1,243 @@
+/*
+#include <stdio.h>
+#include <stdlib.h>
+
+#define _CRT_SECURE_NO_WARNINGS
+
+
+typedef struct node {
+	int data;
+	struct node* next;
+} node;
+
+typedef struct {
+	char film_code[10];
+	int copies;
+	int year;
+} film;
+
+void Ex1();
+void Ex2();
+void Ex3();
+
+node* JosephusPermutation(node* lst, int m);
+node* createNode(int data);
+void printList(node* head);
+node* createCircularList(int arr[], int size);
+
+film* appropriateFilm(char* fileName, int copies_limit, int last_year, int* size);
+void createBinaryFile(char* fileName);
+
+int main()
+{
+	//Ex1();
+	//Ex2();
+	return 0;
+}
+
+
+void Ex1()
+{
+	int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	int size = sizeof(arr) / sizeof(arr[0]);
+	node* list = createCircularList(arr, size);
+
+	int m = 3; // Set the step count
+	node* result = JosephusPermutation(list, m);
+
+	printList(result);
+
+}
+node* JosephusPermutation(node* lst, int m)
+{
+	if (lst == NULL || m <= 1)
+	{
+		return NULL;
+	}
+
+	node* newlst = NULL;
+	node* current = NULL;
+	node* tmp = NULL;
+	int i = 0;
+
+	while (lst != lst->next)
+	{
+		for (i = 1; i < m - 1; ++i)
+		{
+			lst = lst->next;
+
+		}
+
+		tmp = lst->next;
+		lst->next = tmp->next;
+
+		if (newlst == NULL)
+		{
+			newlst = current = tmp;
+		}
+		else
+		{
+			current->next = tmp;
+			current = current->next;
+		}
+		lst = lst->next;
+	}
+	current->next = lst;
+	lst->next = NULL;
+
+	return newlst;
+}
+node* createNode(int data) {
+	node* newNode = (node*)malloc(sizeof(node));
+	newNode->data = data;
+	newNode->next = NULL;
+	return newNode;
+}
+void printList(node* head)
+{// Function to print the list
+	node* temp = head;
+	while (temp != NULL) {
+		printf("%d ", temp->data);
+		temp = temp->next;
+	}
+	printf("\n");
+}
+node* createCircularList(int arr[], int size)
+{// Function to create a circular linked list from an array of integers
+
+	if (size == 0) return NULL;
+
+	node* head = createNode(arr[0]);
+	node* current = head;
+
+	for (int i = 1; i < size; i++) {
+		current->next = createNode(arr[i]);
+		current = current->next;
+	}
+
+	current->next = head; // Make it circular
+	return head;
+}
+
+void Ex2()
+{//used chargpt for main and createBinaryFile
+	int size = 0;
+	createBinaryFile("films");
+	film* films = appropriateFilm("films.dat", 5, 2000, &size);
+
+	if (films == NULL) {
+		printf("No appropriate films found.\n");
+	}
+	else {
+		printf("Number of appropriate films: %d\n", size);
+		for (int i = 0; i < size; i++) {
+			printf("Film code: %s, Copies: %d, Year: %d\n", films[i].film_code, films[i].copies, films[i].year);
+		}
+		free(films);
+	}
+}
+void createBinaryFile(char* fileName)
+{
+	film movies[10] = {
+		{"M001", 50, 1994},  // The Shawshank Redemption
+		{"M002", 70, 1972},  // The Godfather
+		{"M003", 65, 2008},  // The Dark Knight
+		{"M004", 80, 1999},  // Fight Club
+		{"M005", 30, 1994},  // Pulp Fiction
+		{"M006", 45, 2001},  // The Lord of the Rings: The Fellowship of the Ring
+		{"M007", 55, 2010},  // Inception
+		{"M008", 40, 1994},  // Forrest Gump
+		{"M009", 60, 2003},  // The Lord of the Rings: The Return of the King
+		{"M010", 50, 1980}   // Star Wars: Episode V - The Empire Strikes Back
+	};
+
+	FILE* Pfile = fopen(fileName, "wb");
+	if (Pfile == NULL) {
+		printf("Could not open file %s for writing.\n", fileName);
+		return;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		fwrite(&movies[i], sizeof(film), 1, Pfile);
+	}
+
+	fclose(Pfile);
+	printf("Binary file %s created successfully.\n", fileName);
+}
+film* appropriateFilm(char* fileName, int copies_limit, int last_year, int* size)
+	{
+		film* filmList = NULL; //array
+		FILE* Pfile = NULL; //pointer to start file
+		film tmp = { 0, 0, 0 }; 
+		int i = 0;
+		*size = 0;
+
+		if ((Pfile = fopen( fileName, "rb")) == NULL)
+			return NULL;
+
+		fread(&tmp, sizeof(film), 1, Pfile);
+		while (!feof(Pfile))
+		{
+
+			if (tmp.copies <= copies_limit && tmp.year <= last_year)
+				(*size)++;
+			fread(&tmp, sizeof(film), 1, Pfile);
+		}
+		if (*size == 0)
+		{
+			fclose(Pfile);
+			return NULL;
+		}
+		filmList = (film*)calloc(*size, sizeof(film));
+
+
+		rewind(Pfile);
+		fread(&tmp, sizeof(film), 1, Pfile);
+		while (!feof(Pfile))
+		{
+			if (tmp.copies <= copies_limit && tmp.year <= last_year)
+			{
+				filmList[i] = tmp;
+				i++;
+			}
+			fread(&tmp, sizeof(film), 1, Pfile);
+		}
+		fclose(Pfile);
+		return filmList;
+	}
+
+
+void Ex3()
+{
+
+}
+char* my_strkok(char* sentence, char* seperators)
+{
+	int i = 0;
+	static char* start;
+	char* word;
+	
+	if (start != NULL)
+	{
+		start = sentence;
+	}
+	word = (char*)malloc(strlen((start)+1));
+
+	while (*start && strchr(*start, seperators))
+		start++;
+	while (*start && !strchr(*start, seperators))
+	{
+		word[i++] = *start;
+		start++;
+	}
+	if (i > 0)
+	{
+		word[i] = '\0';
+		word = (char*)realloc(word, i + 1);
+		return word;
+	}
+	free(word);
+	return NULL;
+}
+
+*/
