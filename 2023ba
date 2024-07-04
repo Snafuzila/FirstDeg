@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define _CRT_SECURE_NO_WARNINGS
+/*-----------------*/
+typedef struct monom {
+	double coefficient;
+	int power;
+} Monom;
+typedef struct item {
+	Monom mon;
+	struct item* next;
+} item;
+/*-----------------*/
+void Ex1();
+void Ex2();
+void Ex3();
+
+/*-----------------*/
+int main()
+{
+	return 0;
+}
+
+/*-----------------*/
+void Ex1()
+{
+}
+item* createPolynom(item* L)
+{
+	if (!L)
+		return NULL;
+
+	item* current = L, *nextItem = NULL;
+	int maxPow = 0;
+	int i;
+	
+	while (current != NULL)
+	{
+		if (current->mon.power > maxPow)
+		{
+			maxPow = current->mon.power;
+		}
+		current = current->next;
+	}
+	
+	double* countPow = (double*)calloc(maxPow+1, sizeof(double));
+	current = L;
+	while (current != NULL)
+	{
+		countPow[current->mon.power] += current->mon.coefficient;
+		current = current->next;
+	}
+
+	for (i = 0; i < (sizeof(countPow)/sizeof(double)); i++)
+	{
+		if (countPow[i] != 0)
+		{
+			item* newL = (item*)malloc(sizeof(item));
+			newL->mon.power = i;
+			newL->mon.coefficient = countPow[i];
+			newL->next = nextItem;
+			nextItem = newL;
+		}
+	}
+	free(countPow);
+	return nextItem;
+}
+/*-----------------*/// I KNOW HOW TO SOLVE AND ITS WASTE OF TIME. ASNWERS DIDNT DO AS EFFICIENT, THEY USED CALLOC
+//void sortedRowsCols(int** ar, int m, int n, int** ar_s_rows, int* num_s_rows, int** ar_s_cols, int* num_s_cols)
+//{
+//	if (ar == NULL)
+//	{
+//		return;
+//	}
+//
+//	int i, j;
+//	*num_s_rows = *num_s_cols = 0;
+//
+//	for (i = 0; i < m; i++)
+//	{
+//		if (rowSorted(ar[i], n))
+//		{
+//			(*num_s_rows)++;
+//		}
+//	}
+//	int* rowsAr = (int)malloc((*num_s_rows)*sizeof(int));
+//	*ar_s_rows = rowsAr;
+//
+//	for (i = 0; i < m; i++)
+//	{
+//		if (rowSorted(ar[i], n))
+//		{
+//			rowsAr[]
+//		}
+//	}
+//
+//
+//	for (j = 0; j < n; j++)
+//	{
+//		if (colSorted(ar, m, i))
+//		{
+//			(*num_s_cols)++;
+//		}
+//	}
+//	int* colsAr = (int)malloc((*num_s_cols) * sizeof(int));
+//	*ar_s_cols = colsAr;
+//
+//
+//
+//
+//
+//}
+//int rowSorted(int* a, int n)
+//{
+//
+//}
+//int colSorted(int** arr, int m, int col)
+//{
+//
+//}
+//
+///*-----------------*/
