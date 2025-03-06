@@ -1,0 +1,73 @@
+public class Point 
+{
+    private float xCord, yCord;
+    
+    public Point(float x, float y) {
+        this.xCord = x;
+        this.yCord = y;
+    }
+
+    public Point() {
+        this.xCord = 0.0f;
+        this.yCord = 0.0f;
+    }
+
+    public Point(float x) {
+        this.xCord = x;
+        this.yCord = 0.0f;
+    }
+
+    public Point(float y) {
+        this.xCord = 0.0f;
+        this.yCord = y;
+    }
+
+    
+    public void setX(float x)
+    {
+        this.xCord = x;
+    }
+    public void setY(float y)
+    {
+        this.yCord = y;
+    }
+    public void setPoint(float x, float y)
+    {
+        this.xCord = x;
+        this.yCord = y;
+    }
+    public float getX()
+    {
+        return this.xCord;
+    }
+    public float getY()
+    {
+        return this.yCord;
+    }
+    
+    public float dist(Point other)
+    {
+        float dist = Math.sqrt((other.getX()-this.xCord)*(other.getX()-this.xCord) + (other.getY()-this.yCord)(other.getY()-this.yCord)) 
+        return dist;
+    }
+    
+    public void printCoordinates() {
+        System.out.println("x: " + xCord + ", y: " + yCord);
+    }
+}
+
+public class MyClass {
+    public static void main(String args[]) {
+        // Create Point objects
+        Point point1 = new Point(5, 10);  // Using the constructor with both x and y
+        Point point2 = new Point();  // Using the default constructor
+        Point point3 = new Point(7);  // Using the constructor with only x
+        Point point4 = new Point(0, 8);  // Using the constructor with both x and y
+
+        // Print coordinates
+        point1.printCoordinates();
+        point2.printCoordinates();
+        point3.printCoordinates();
+        point4.printCoordinates();
+    }
+}
