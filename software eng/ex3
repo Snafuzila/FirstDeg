@@ -1,0 +1,89 @@
+// Employee class
+class Employee {
+    private String employeeName;
+    private static int idCounter = 1000;
+    private int id;
+    private double salary;
+
+    // Constructor to initialize employee name and salary
+    public Employee(String employeeName, double salary) {
+        this.employeeName = employeeName;
+        this.id = idCounter++;  // Automatically assign ID and increment the counter
+        this.salary = salary;
+    }
+
+    // Method to calculate bonus (default implementation)
+    public int calcBonus() {
+        return 0; // Implement your bonus logic here
+    }
+
+    // Method to update the salary by adding the bonus
+    public void updateSalary(int bonus) {
+        this.salary = bonus;
+    }
+
+    // Method to display Employee information
+    public void displayInfo() {
+        System.out.println("Employee Name: " + employeeName);
+        System.out.println("Employee ID: " + id);
+        System.out.println("Employee Salary: " + salary);
+    }
+
+    // Getter for salary, required for Programmer and Secretary subclasses
+    public double getSalary() {
+        return this.salary;
+    }
+}
+
+// Programmer class that inherits from Employee
+class Programmer extends Employee {
+    // Constructor to initialize programmer's name and salary
+    public Programmer(String employeeName, double salary) {
+        super(employeeName, salary);  // Call the superclass constructor
+    }
+
+    // Overriding the calcBonus method for Programmer (salary * 1.5)
+    @Override
+    public int calcBonus() {
+        return (int) (getSalary() * 1.5); // Calculate 1.5 times the salary
+    }
+}
+
+// Secretary class that inherits from Employee
+class Secretary extends Employee {
+    int wordsPerMin;
+
+    // Constructor for Secretary
+    public Secretary(String employeeName, double salary, int wordsPerMin) {
+        super(employeeName, salary);  // Corrected constructor
+        this.wordsPerMin = wordsPerMin;
+    }
+
+    // Overriding the calcBonus method for Secretary
+    @Override
+    public int calcBonus() {
+        return (int) (getSalary() + 500);  // Add 500 to the salary for the bonus
+    }
+}
+
+// Public class to execute the program
+public class MyClass {
+    public static void main(String[] args) {
+        // Creating Programmer and Secretary objects
+        Programmer programmer1 = new Programmer("Alice", 70000);
+        Secretary secretary1 = new Secretary("Bob", 40000, 75);
+
+        // Displaying employee details before bonus
+        programmer1.displayInfo();
+        secretary1.displayInfo();
+
+        // Update salary after bonus
+        programmer1.updateSalary(programmer1.calcBonus());
+        secretary1.updateSalary(secretary1.calcBonus());
+
+        // Displaying employee details after bonus
+        System.out.println("\nAfter bonus update:");
+        programmer1.displayInfo();
+        secretary1.displayInfo();
+    }
+}
